@@ -1,26 +1,42 @@
-from fastapi import APIRouter, Depends
-from app.db.mongo import get_db
+from fastapi import APIRouter, HTTPException
 from app.services import leave_service
+from app.models.leave import LeaveCreate, LeaveUpdate
  
 router = APIRouter(prefix="/leaves", tags=["Leaves"])
  
- 
+# Create Leave
 @router.post("/")
-async def request_leave(leave: dict, db=Depends(get_db)):
-    return await leave_service.request_leave(
-        db,
-        leave["employee_id"],
-        leave["start_date"],
-        leave["end_date"],
-        leave.get("reason", "")
-    )
+async def create_leave(leave: LeaveCreate):
+    new_leave = await leave_service.create_leave(leave.dict())
+    if not new_leave:
+        raise HTTPException(status_code=400, detail="Failed to create leave")
+    return new_leave
  
+# Get Leave by ID
+@router.get("/{leave_id}")
+async def get_leave(leave_id: str):
+    leave = await leave_service.get_leave(leave_id)
+    if not leave:
+        raise HTTPException(status_code=404, detail="Leave not found")
+    return leave
  
-@router.put("/{leave_id}/approve")
-async def approve_leave(leave_id: str, db=Depends(get_db)):
-    return await leave_service.update_leave_status(db, leave_id, "Approved")
+# Get All Leaves
+@router.get("/")
+async def get_all_leaves():
+    return await leave_service.get_all_leaves()
  
+# Update Leave
+@router.put("/{leave_id}")
+async def update_leave(leave_id: str, leave: LeaveUpdate):
+    updated_leave = await leave_service.update_leave(leave_id, leave.dict(exclude_unset=True))
+    if not updated_leave:
+        raise HTTPException(status_code=404, detail="Leave not found")
+    return updated_leave
  
-@router.put("/{leave_id}/reject")
-async def reject_leave(leave_id: str, db=Depends(get_db)):
-    return await leave_service.update_leave_status(db, leave_id, "Rejected")
+# Delete Leave
+@router.delete("/{leave_id}")
+async def delete_leave(leave_id: str):
+    result = await leave_service.delete_leave(leave_id)
+    if not result["deleted"]:
+        raise HTTPException(status_code=404, detail="Leave not found")
+    return result

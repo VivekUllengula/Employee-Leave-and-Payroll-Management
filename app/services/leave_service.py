@@ -1,88 +1,44 @@
-# app/services/leave_service.py
- 
-from datetime import date
-
-from fastapi import HTTPException
-
 from bson import ObjectId
+from datetime import datetime
+from app.db.mongo import get_db
+from app.utils.mongo_helpers import convert_mongo_document, convert_many, normalize_document
+from app.models.leave import LeaveStatus
+ 
+async def create_leave(leave_data: dict):
+    db = get_db()
+    leave_data = normalize_document(leave_data)
+    leave_data["status"] = LeaveStatus.PENDING
+    leave_data["requested_on"] = datetime.utcnow()
+ 
+    result = await db["leaves"].insert_one(leave_data)
+    new_leave = await db["leaves"].find_one({"_id": result.inserted_id})
+ 
+    return convert_mongo_document(new_leave) if new_leave else None
  
  
-async def request_leave(db, employee_id: str, start_date: date, end_date: date, reason: str) -> dict:
-
-    """
-
-    Create a leave request (status=Pending).
-
-    """
-
-    leave_doc = {
-
-        "employee_id": ObjectId(employee_id),
-
-        "start_date": start_date,
-
-        "end_date": end_date,
-
-        "status": "Pending",
-
-        "reason": reason,
-
-    }
-
-    res = await db.leaves.insert_one(leave_doc)
-
-    return await db.leaves.find_one({"_id": res.inserted_id})
+async def get_leave(leave_id: str):
+    db = get_db()
+    leave = await db["leaves"].find_one({"_id": ObjectId(leave_id)})
+    return convert_mongo_document(leave) if leave else None
  
  
-async def update_leave_status(db, leave_id: str, status: str) -> dict:
-
-    """
-
-    Approve or Reject a leave request.
-
-    """
-
-    if status not in ["Approved", "Rejected"]:
-
-        raise HTTPException(status_code=400, detail="Status must be Approved or Rejected")
- 
-    leave = await db.leaves.find_one({"_id": ObjectId(leave_id)})
-
-    if not leave:
-
-        raise HTTPException(status_code=404, detail="Leave not found")
- 
-    await db.leaves.update_one({"_id": leave["_id"]}, {"$set": {"status": status}})
-
-    return await db.leaves.find_one({"_id": leave["_id"]})
+async def get_all_leaves():
+    db = get_db()
+    leaves = await db["leaves"].find().to_list(100)
+    return convert_many(leaves)
  
  
-async def get_approved_leaves_in_month(db, employee_id, year: int, month: int):
-
-    """
-
-    Get all approved leaves overlapping a given month.
-
-    """
-
-    from calendar import monthrange
-
-    month_start = date(year, month, 1)
-
-    month_end = date(year, month, monthrange(year, month)[1])
+async def update_leave(leave_id: str, update_data: dict):
+    db = get_db()
+    update_data = normalize_document(update_data)
  
-    cursor = db.leaves.find({
-
-        "employee_id": employee_id,
-
-        "status": "Approved",
-
-        "start_date": {"$lte": month_end},
-
-        "end_date": {"$gte": month_start}
-
-    })
+    await db["leaves"].update_one({"_id": ObjectId(leave_id)}, {"$set": update_data})
+    updated = await db["leaves"].find_one({"_id": ObjectId(leave_id)})
  
-    return [doc async for doc in cursor]
-
+    return convert_mongo_document(updated) if updated else None
  
+ 
+async def delete_leave(leave_id: str):
+    db = get_db()
+    result = await db["leaves"].delete_one({"_id": ObjectId(leave_id)})
+    return {"deleted": result.deleted_count > 0}
