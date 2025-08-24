@@ -1,64 +1,31 @@
-from fastapi import HTTPException
 from bson import ObjectId
+from app.db.mongo import get_db
+from app.utils.mongo_helpers import convert_mongo_document, convert_many, normalize_document
  
+async def create_employee(employee_data: dict):
+    db = get_db()
+    employee_data = normalize_document(employee_data)
+    result = await db["employees"].insert_one(employee_data)
+    new_employee = await db["employees"].find_one({"_id": result.inserted_id})
+    return convert_mongo_document(new_employee) if new_employee else None
  
-async def create_employee(db, employee_data: dict) -> dict:
-
-    """
-
-    Insert a new employee into MongoDB.
-
-    """
-
-    res = await db.employees.insert_one(employee_data)
-
-    return await db.employees.find_one({"_id": res.inserted_id})
+async def get_employee(employee_id: str):
+    db = get_db()
+    employee = await db["employees"].find_one({"_id": ObjectId(employee_id)})
+    return convert_mongo_document(employee) if employee else None
  
+async def get_all_employees():
+    db = get_db()
+    employees = await db["employees"].find().to_list(100)
+    return convert_many(employees)
  
-async def get_employee(db, employee_id: str) -> dict:
-
-    """
-
-    Retrieve employee by ID.
-
-    """
-
-    employee = await db.employees.find_one({"_id": ObjectId(employee_id)})
-
-    if not employee:
-
-        raise HTTPException(status_code=404, detail="Employee not found")
-
-    return employee
+async def update_employee(employee_id: str, update_data: dict):
+    db = get_db()
+    await db["employees"].update_one({"_id": ObjectId(employee_id)}, {"$set": update_data})
+    updated = await db["employees"].find_one({"_id": ObjectId(employee_id)})
+    return convert_mongo_document(updated) if updated else None
  
- 
-async def update_employee(db, employee_id: str, update_data: dict) -> dict:
-
-    """
-
-    Update employee details.
-
-    """
-
-    await db.employees.update_one({"_id": ObjectId(employee_id)}, {"$set": update_data})
-
-    return await get_employee(db, employee_id)
- 
- 
-async def delete_employee(db, employee_id: str) -> dict:
-
-    """
-
-    Delete employee.
-
-    """
-
-    res = await db.employees.delete_one({"_id": ObjectId(employee_id)})
-
-    if res.deleted_count == 0:
-
-        raise HTTPException(status_code=404, detail="Employee not found")
-
-    return {"msg": "Employee deleted successfully"}
-
- 
+async def delete_employee(employee_id: str):
+    db = get_db()
+    result = await db["employees"].delete_one({"_id": ObjectId(employee_id)})
+    return {"deleted": result.deleted_count > 0}
