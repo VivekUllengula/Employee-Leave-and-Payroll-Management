@@ -1,0 +1,398 @@
+{
+	"info": {
+		"_postman_id": "07c860e5-0dde-4f5f-a0d4-27e41fff0697",
+		"name": "Employee Leave & Payroll Management",
+		"description": "Postman collection for testing Employee, Leave, and Payroll APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45350719",
+		"_collection_link": "https://vivek-4617800.postman.co/workspace/Vivek's-Workspace~d53ced29-b8e6-4fad-89f0-94c59d314ca4/collection/45350719-07c860e5-0dde-4f5f-a0d4-27e41fff0697?action=share&source=collection_link&creator=45350719"
+	},
+	"item": [
+		{
+			"name": "Employees",
+			"item": [
+				{
+					"name": "Create Employee",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Revi Kumar\",\n  \"email\": \"revi@example.com\",\n  \"designation\": \"Software Engineer\",\n  \"contact\": \"9999999999\",\n  \"salary\": 60000,\n  \"join_date\": \"2025-08-01\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/employees/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"employees",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Employees",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/employees/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"employees",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Employee by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/employees/{{employeeId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"employees",
+								"{{employeeId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Employee",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"position\": \"Senior Engineer\",\n  \"salary\": 75000\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/employees/{{employeeId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"employees",
+								"{{employeeId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Employee",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/employees/{{employeeId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"employees",
+								"{{employeeId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Leaves",
+			"item": [
+				{
+					"name": "Apply Leave",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"employee_id\": \"{{employeeId}}\",\n  \"start_date\": \"2025-08-01\",\n  \"end_date\": \"2025-08-05\",\n  \"reason\": \"Vacation\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/leaves/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"leaves",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Leaves",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/leaves/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"leaves",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Leave",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"Approved\",\n  \"reason\": \"Vacation\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/leaves/{{leaveId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"leaves",
+								"{{leaveId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Leave",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/leaves/{{leaveId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"leaves",
+								"{{leaveId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payroll",
+			"item": [
+				{
+					"name": "Generate Payroll",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"employee_id\": \"{{employeeId}}\",\n  \"month\": \"Aug-2025\",\n  \"base_salary\": 60000,\n  \"deductions\": 2000\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/payrolls/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"payrolls",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Payrolls",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/payrolls/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"payrolls",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Payroll by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/payrolls/{{payrollId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"payrolls",
+								"{{payrollId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Payroll",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"deductions\": 3000,\n  \"net_salary\": 57000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/payrolls/{{payrollId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"payrolls",
+								"{{payrollId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"admin@example.com\",\r\n  \"password\": \"securepass123\",\r\n  \"full_name\": \"Admin User\",\r\n  \"role\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "admin@example.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "securepass123",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://127.0.0.1:8000"
+		},
+		{
+			"key": "employeeId",
+			"value": ""
+		},
+		{
+			"key": "leaveId",
+			"value": ""
+		},
+		{
+			"key": "payrollId",
+			"value": ""
+		}
+	]
+}

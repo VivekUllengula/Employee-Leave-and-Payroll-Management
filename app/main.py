@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routes import employee, leave, payroll
+from app.routes import employee, leave, payroll, user
 from app.db.mongo import connect_to_db, close_mongo_connection
 from app.core.config import settings
 
@@ -13,6 +13,7 @@ app = FastAPI(
 app.include_router(employee.router)
 app.include_router(leave.router)
 app.include_router(payroll.router)
+app.include_router(user.router)
 
 @app.on_event("startup")
 async def startup_db_client():
