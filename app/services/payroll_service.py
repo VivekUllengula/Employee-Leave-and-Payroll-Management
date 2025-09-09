@@ -6,8 +6,12 @@ from app.utils.mongo_helpers import convert_mongo_document, convert_many, normal
 # ✅ Generate Payroll for an Employee
 async def generate_payroll(payroll_data: dict):
     db = get_db()
+
     payroll_data = normalize_document(payroll_data)
     payroll_data["generated_at"] = datetime.utcnow()
+    deductions = payroll_data["deductions"]
+    base = payroll_data["base_salary"]
+    payroll_data["net_salary"] = base - deductions 
     result = await db["payrolls"].insert_one(payroll_data)
     new_payroll = await db["payrolls"].find_one({"_id": result.inserted_id})
     return convert_mongo_document(new_payroll) if new_payroll else None
