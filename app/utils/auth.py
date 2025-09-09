@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 from datetime import datetime, timedelta, timezone
 from jose import jwt, JWTError
 from passlib.context import CryptContext
@@ -7,6 +9,11 @@ from app.core.config import settings
 from app.db.mongo import get_db
 from app.models.user import TokenPayload
 from typing import Annotated
+
+load_dotenv()
+
+SECRET_KEY = os.getenv("JWT_SECRET")
+ALGORITHM = os.getenv("JWT_ALGORITHM")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
@@ -29,6 +36,9 @@ def create_access_token(
     )
     to_encode = {"sub": subject, "role": role, "exp": expire}
     return jwt.encode(to_encode, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
+
+async def decode_access_token(token: str):
+    return jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
  
 async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
