@@ -25,7 +25,7 @@ async def get_all_employees():
 # Update employee (normalize values before saving)
 async def update_employee(employee_id: str, update_data: dict):
     db = get_db()
-    update_data = normalize_document(update_data)  # 👈 convert dates if needed
+    update_data = normalize_document(update_data)  # convert dates if needed
     await db["employees"].update_one(
         {"_id": ObjectId(employee_id)}, {"$set": update_data}
     )
