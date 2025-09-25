@@ -13,7 +13,7 @@ async def register(user: UserCreate, db=Depends(get_db)):
     """Register a new user"""
     service = UserService(db)
     new_user = await service.create_user(user)
-    return convert_mongo_document(UserInDB(**new_user))
+    return UserInDB(**convert_mongo_document(new_user))
  
  
 @router.post("/login", response_model=Token)

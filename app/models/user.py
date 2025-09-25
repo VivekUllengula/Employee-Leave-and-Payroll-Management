@@ -5,7 +5,7 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str = Field(min_length=6)
     full_name: str
-    role: str = Field(default="admin", pattern=r"^(admin|hr)$")
+    role: str = Field(default="admin", pattern=r"^(admin|hr|manager)$")
 
 class UserLogin(BaseModel):
     email: EmailStr

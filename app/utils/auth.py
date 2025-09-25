@@ -69,4 +69,21 @@ async def get_current_user(
         raise credentials_exception
     return user
 
- 
+def role_checker(allowed_roles: list):
+    """Dependency to check user role from JWT-authenticated current_user.
+    Usage: Depends(role_checker(['admin'])) or in router dependencies.
+    """
+    def wrapper(current_user=Depends(get_current_user)):
+        if not current_user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Not authenticated"
+            )
+        role = current_user.get("role")
+        if role not in allowed_roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not enough permissions"
+            )
+        return current_user
+    return wrapper

@@ -4,7 +4,6 @@ from fastapi import HTTPException, status
 from datetime import timedelta, datetime
  
 
-
 class UserService:
     def __init__(self, db):
         self.db = db
@@ -53,7 +52,7 @@ class UserService:
         try:
             decoded = await decode_access_token(token) 
         except Exception as e:
-            print(f"❌ Token decode failed: {e}")
+            print(f"Token decode failed: {e}")
             raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired token",

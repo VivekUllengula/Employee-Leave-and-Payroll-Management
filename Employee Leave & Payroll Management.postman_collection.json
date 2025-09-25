@@ -23,7 +23,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Revi Kumar\",\n  \"email\": \"revi@example.com\",\n  \"designation\": \"Software Engineer\",\n  \"contact\": \"9999999999\",\n  \"salary\": 60000,\n  \"join_date\": \"2025-08-01\"\n}"
+							"raw": "{\n  \"name\": \"Manish Sai Jakkula\",\n  \"email\": \"manish.jakkula@thezennialpro.com\",\n  \"designation\": \"Agentic AI Developer\",\n  \"contact\": \"8074458085\",\n  \"salary\": 85000,\n  \"join_date\": \"2025-04-02\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/employees/",
@@ -86,7 +86,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"position\": \"Senior Engineer\",\n  \"salary\": 75000\n}"
+							"raw": "{\n  \"designation\": \"Agentic AI Sr.Developer\",\n  \"salary\": 35000\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/employees/{{employeeId}}",
@@ -127,6 +127,16 @@
 				{
 					"name": "Apply Leave",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzcmlrYW50aEBleGFtcGxlLmNvbSIsInJvbGUiOiJociIsImV4cCI6MTc1ODgyNjg2OH0.FzBCIs1HbKI0kTRwvFu5vRLu-EeYeqKtk6o5EdwSQo0",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -136,7 +146,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"employee_id\": \"{{employeeId}}\",\n  \"start_date\": \"2025-08-01\",\n  \"end_date\": \"2025-08-05\",\n  \"reason\": \"Vacation\"\n}"
+							"raw": "{\n  \"employee_id\": \"{{employeeId}}\",\n  \"start_date\": \"2025-09-09\",\n  \"end_date\": \"2025-09-19\",\n  \"reason\": \"Parental Leave\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/leaves/",
@@ -154,6 +164,16 @@
 				{
 					"name": "Get All Leaves",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzcmlrYW50aEBleGFtcGxlLmNvbSIsInJvbGUiOiJociIsImV4cCI6MTc1ODgyNjg2OH0.FzBCIs1HbKI0kTRwvFu5vRLu-EeYeqKtk6o5EdwSQo0",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -176,7 +196,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"status\": \"Approved\",\n  \"reason\": \"Vacation\"\n}",
+							"raw": "{\n  \"status\": \"Approved\",\n  \"reason\": \"Sick Leave\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -231,16 +251,27 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"employee_id\": \"{{employeeId}}\",\n  \"month\": \"Aug-2025\",\n  \"base_salary\": 60000,\n  \"deductions\": 2000\n}"
+							"raw": "{}"
 						},
 						"url": {
-							"raw": "{{baseUrl}}/payrolls/",
+							"raw": "{{baseUrl}}/payrolls/generate/{{employeeId}}?month=9&year=2025",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"payrolls",
-								""
+								"generate",
+								"{{employeeId}}"
+							],
+							"query": [
+								{
+									"key": "month",
+									"value": "9"
+								},
+								{
+									"key": "year",
+									"value": "2025"
+								}
 							]
 						}
 					},
@@ -289,7 +320,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"deductions\": 3000,\n  \"net_salary\": 57000\n}",
+							"raw": "{\n  \"deductions\": 5000,\n  \"net_salary\": 55000\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -321,7 +352,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"admin@example.com\",\r\n  \"password\": \"securepass123\",\r\n  \"full_name\": \"Admin User\",\r\n  \"role\": \"admin\"\r\n}",
+							"raw": "{\r\n  \"email\": \"srikanth@example.com\",\r\n  \"password\": \"securepass123\",\r\n  \"full_name\": \"Srikanth A\",\r\n  \"role\": \"hr\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -369,6 +400,39 @@
 							"path": [
 								"auth",
 								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "admin@example.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "securepass123",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"logout"
 							]
 						}
 					},
