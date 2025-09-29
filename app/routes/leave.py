@@ -33,6 +33,14 @@ async def update_leave(leave_id: str, leave: LeaveUpdate):
     if not updated_leave:
         raise HTTPException(status_code=404, detail="Leave not found")
     return updated_leave
+
+#Update leave and deduct from employee's annual paid leaves
+@router.put("/update_and_deduct/{leave_id}", dependencies=[Depends(role_checker(['admin', 'manager']))])
+async def update_leave_and_deduct(leave_id: str, leave: LeaveUpdate):   
+    updated_leave = await leave_service.update_leave_and_deduct(leave_id, leave.dict(exclude_unset=True))
+    if not updated_leave:
+        raise HTTPException(status_code=404, detail="Leave not found or deduction failed")
+    return updated_leave
  
 # Delete Leave
 @router.delete("/{leave_id}", dependencies=[Depends(role_checker(['admin']))])

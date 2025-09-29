@@ -77,6 +77,22 @@ async def generate_payroll(employee_id: str, month: int, year: int):
     result = await db["payrolls"].insert_one(payroll_doc)
     new_payroll = await db["payrolls"].find_one({"_id": result.inserted_id})
     return convert_mongo_document(new_payroll) if new_payroll else None
+
+#Generate Payrolls for all employees for a month
+async def generate_payrolls_for_all(month: int, year: int):
+    db = get_db()
+    employees = await db["employees"].find().to_list(None)
+    payrolls = []
+    for emp in employees:
+        payroll = await generate_payroll(str(emp["_id"]), month, year)
+        if payroll:
+            payrolls.append(payroll)
+    return payrolls
+
+#Generate payroll automatically for current month (for testing/demo)
+async def generate_payrolls_for_current_month():    
+    now = datetime.utcnow()
+    return await generate_payrolls_for_all(now.month, now.year) 
  
 # Get Payroll by ID
 async def get_payroll(payroll_id: str):

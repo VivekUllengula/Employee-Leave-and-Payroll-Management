@@ -22,6 +22,24 @@ async def generate_payroll(employee_id: str, month: int, year: int):
         "Failed to generate payroll"
     )
 
+#Generate Payrolls for all employees for a month (admin/hr only)
+@router.post("/generate_all", response_model=list[PayrollInDB], dependencies=[Depends(role_checker(['admin', 'hr']))])
+async def generate_payrolls_for_all(month: int, year: int):
+    payrolls = await payroll_service.generate_payrolls_for_all(month, year)
+    if not payrolls:
+        raise HTTPException(status_code=400, detail="Failed to generate payrolls")
+    return payrolls
+
+#Generate payroll automatically for current month (for testing/demo)
+@router.post("/generate_current_month", response_model=list[PayrollInDB], dependencies=[Depends(role_checker(['admin', 'hr']))])
+async def generate_payrolls_for_current_month():    
+    from datetime import datetime
+    now = datetime.utcnow()
+    payrolls = await payroll_service.generate_payrolls_for_all(now.month, now.year)
+    if not payrolls:
+        raise HTTPException(status_code=400, detail="Failed to generate payrolls")
+    return payrolls
+
 # Get Payroll by ID
 @router.get("/{payroll_id}", response_model=PayrollInDB)
 async def get_payroll(payroll_id: str):

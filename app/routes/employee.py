@@ -14,6 +14,14 @@ async def create_employee(employee: EmployeeCreate):
         raise HTTPException(status_code=400, detail="Failed to create employee")
     return new_employee
 
+#Create multiple employees in bulk
+@router.post("/bulk", dependencies=[Depends(role_checker(['admin']))])
+async def create_employees_bulk(employees: list[EmployeeCreate]):
+    new_employees = await employee_service.create_employees_bulk([emp.dict() for emp in employees])
+    if not new_employees:
+        raise HTTPException(status_code=400, detail="Failed to create employees")
+    return new_employees
+
 # Get one employee by ID
 @router.get("/{employee_id}")
 async def get_employee(employee_id: str):
